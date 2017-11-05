@@ -3,15 +3,12 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Car;
 import com.example.demo.repository.HelloRepository;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -26,6 +23,6 @@ public class HelloController {
 
 	@GetMapping("/asyncCars")
 	public Mono<List<Car>> asyncCars() {
-		return Mono.fromFuture(helloRepository.asyncSelectAll());
+		return Mono.fromCompletionStage(helloRepository.asyncSelectAll());
 	}
 }
