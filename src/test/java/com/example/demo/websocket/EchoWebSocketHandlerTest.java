@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.socket.WebSocketMessage;
-import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import reactor.core.publisher.Flux;
@@ -30,11 +30,11 @@ public class EchoWebSocketHandlerTest {
 		Flux<String> input = Flux.range(1, count).map(index -> "msg-" + index);
 		ReplayProcessor<Object> output = ReplayProcessor.create(count);
 
-		WebSocketClient client = new StandardWebSocketClient();
+		WebSocketClient client = new ReactorNettyWebSocketClient();
 		client.execute(getUrl("/websocket/echo"),
 			session -> session
 				.send(input.map(session::textMessage))
-				.thenMany(session.receive().take(count).map(WebSocketMessage::getPayloadAsText))
+				.thenMany(session.receive().take(count).map(WebSocketMessage::getPayloadAsText).log())
 				.subscribeWith(output)
 				.then())
 			.block(Duration.ofMillis(5000));
