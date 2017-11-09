@@ -18,7 +18,7 @@ public class EchoWebSocketHandler implements WebSocketHandler {
 	public EchoWebSocketHandler(UnicastProcessor<String> eventPublisher, Flux<String> events) {
 		this.eventPublisher = eventPublisher;
 		this.mapper = new ObjectMapper();
-		this.outputEvents = Flux.from(events).map(this::toJSON);
+		this.outputEvents = Flux.from(events);//.map(this::toJSON);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class EchoWebSocketHandler implements WebSocketHandler {
 		WebSocketMessageSubscriber subscriber = new WebSocketMessageSubscriber(eventPublisher);
 		session.receive()
 			.map(WebSocketMessage::getPayloadAsText)
-			.map(this::toEvent)
+			//.map(this::toEvent)
 			.subscribe(subscriber::onNext, subscriber::onError, subscriber::onComplete);
 		return session.send(outputEvents.map(session::textMessage));
 	}
