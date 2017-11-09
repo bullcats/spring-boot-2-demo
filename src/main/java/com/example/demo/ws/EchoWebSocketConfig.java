@@ -22,7 +22,7 @@ public class EchoWebSocketConfig {
 	@Bean
 	public Flux<String> events(UnicastProcessor<String> eventPublisher) {
 		return eventPublisher
-			.replay(25)
+			.replay(25) // 각각의 클라이언트 마다 접속하는 시간이 다르기 때문에, 접속 시점에 history 설정만큼 이전 메시지를 수신한다.
 			.autoConnect();
 	}
 
